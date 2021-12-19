@@ -44,11 +44,13 @@ all: win-debug
 .PHONY: win-debug
 win-debug:
 	@mingw32-make $(APPNAME) "OBJDIR=$(OBJDIR)/win/debug" "BINDIR=$(BINDIR)/win/debug" "CFLAGS=$(CFLAGS) $(COMMON_INCLUDES) $(WIN_INCLUDES) -g" "LDFLAGS=$(LDFLAGS) $(COMMON_LFLAGS) $(WIN_LFLAGS)"
+	$(CP) $(subst /,\,"dependencies/SDL2-WIN/bin/SDL2.dll" "$(BINDIR)/win/debug")
 
 ###### win release ######
 .PHONY: win-release
 win-release:
 	@mingw32-make $(APPNAME) "OBJDIR=$(OBJDIR)/win/release" "BINDIR=$(BINDIR)/win/release" "CFLAGS=$(CFLAGS) $(COMMON_INCLUDES) $(WIN_INCLUDES)" "LDFLAGS=$(LDFLAGS) $(COMMON_LFLAGS) $(WIN_LFLAGS)"
+	$(CP) $(subst /,\,"dependencies/SDL2-WIN/bin/SDL2.dll" "$(BINDIR)/win/release")
 
 ###### unix debug #######
 .PHONY: unix-debug
@@ -63,7 +65,6 @@ unix-release:
 $(APPNAME): makedirs | $(OBJ)
 	@$(MK) $(BINDIR)
 	gcc $(CFLAGS) -o $(BINDIR)/$@ $| $(LDFLAGS)
-	$(CP) $(subst /,\,"dependencies/SDL2-WIN/bin/SDL2.dll" "bin/win/debug")
 
 $(OBJDIR)/%.o: $(SRCDIR)/%.c
 	@$(CC) $(CFLAGS) $(LDFLAGS) $< -MM -MF $(patsubst %.o,%.d,$@) -MT $@
