@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <SDL2/SDL.h>
+#include "event_handling.h"
 
 int main(int argc, char* args[])
 {
@@ -19,9 +20,11 @@ int main(int argc, char* args[])
 
     SDL_RenderPresent(renderer);
 
-    while (1)
+    initEventHandling();
+
+    while (!handleEvents())
     {
-        SDL_Delay(1);
+        SDL_Delay(16); // temporary, results in approximately 60 FPS
     }
     
 
