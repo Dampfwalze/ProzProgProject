@@ -1,32 +1,42 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <SDL2/SDL.h>
-#include "event_handling.h"
+
+#include "game.h"
+#include "event_dispatcher.h"
+#include "sdl_error_handler.h"
 
 int main(int argc, char* args[])
 {
-    if(SDL_Init(SDL_INIT_EVERYTHING) != 0)
-        printf("SDL_Init failed!\n");
-    else
-        printf("SDL_Init was successful!\n");
+    handle_sdl_error(SDL_Init(SDL_INIT_EVERYTHING));
+    //    if( != 0)
+    //        printf("SDL_Init failed!\n");
+    //    else
+    //        printf("SDL_Init was successful!\n");
 
-    SDL_Window* window = SDL_CreateWindow("Test", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 400, 300, SDL_WINDOW_SHOWN);
-
-    SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, 0);
-
-    SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
-
-    SDL_RenderClear(renderer);
-
-    SDL_RenderPresent(renderer);
+    SDL_Window *window = handle_sdl_error(SDL_CreateWindow("Test", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 400, 300, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE));
+    SDL_Renderer *renderer = handle_sdl_error(SDL_CreateRenderer(window, -1, 0));
 
     initEventHandling();
+
+    // Game setup
+    setup();
 
     while (!handleEvents())
     {
         SDL_Delay(16); // temporary, results in approximately 60 FPS
+
+        // Do game frame
+        doFrame(renderer);
+
+        SDL_RenderPresent(renderer);
     }
-    
+
+    // Game quit
+    quit();
+
+    SDL_DestroyRenderer(renderer);
+    SDL_DestroyWindow(window);
 
     SDL_Quit();
     return 0;

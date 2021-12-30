@@ -1,5 +1,4 @@
-#include <SDL2/SDL.h>
-#include "event_handling.h"
+#include "keyboard_event.h"
 
 typedef char KeyState;
 
@@ -105,35 +104,31 @@ int _compare(const void *a, const void *b)
         return 1;
 }
 
-void initEventHandling()
+void keyboardEvent_init()
 {
     qsort(recordedKeyCodes, recordedKeyCodeCount, sizeof(SDL_Keycode), _compare);
 }
 
-int handleEvents()
+void keyboardEvent_beginFrame()
 {
     for (size_t i = 0; i < recordedKeyCodeCount; i++)
         keyStates[i] = keyStates[i] & 0b100;
+}
 
-    SDL_Event event;
-    while (SDL_PollEvent(&event))
+void keyboardEvent_handle(SDL_Event *event)
+{
+    int keyIndex;
+    switch (event->type)
     {
-        int keyIndex;
-        switch (event.type)
-        {
-        case SDL_QUIT:
-            return 1;
-        case SDL_KEYDOWN:
-            keyIndex = _findKey(event.key.keysym.sym);
-            if (!keyStates[keyIndex])
-                keyStates[keyIndex] = 0b110;
-            break;
-        case SDL_KEYUP:
-            keyStates[_findKey(event.key.keysym.sym)] = 0b001;
-            break;
-        default:
-            break;
-        }
+    case SDL_KEYDOWN:
+        keyIndex = _findKey(event->key.keysym.sym);
+        if (!keyStates[keyIndex])
+            keyStates[keyIndex] = 0b110;
+        break;
+    case SDL_KEYUP:
+        keyStates[_findKey(event->key.keysym.sym)] = 0b001;
+        break;
+    default:
+        break;
     }
-    return 0;
 }
