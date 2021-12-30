@@ -20,7 +20,9 @@ int main(int argc, char* args[])
     initEventHandling();
 
     // Game setup
-    setup();
+    int width, height;
+    SDL_GetRendererOutputSize(renderer, &width, &height);
+    setup(width, height);
 
     while (!handleEvents())
     {
