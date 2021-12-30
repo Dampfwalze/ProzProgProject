@@ -1,4 +1,10 @@
 #include "game.h"
+#include "game_math.h"
+
+struct Player
+{
+    Vec2 position;
+};
 
 void setup()
 {

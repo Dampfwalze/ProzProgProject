@@ -2,4 +2,4 @@
 
 void windowEvent_init();
 void windowEvent_beginFrame();
-void windowEvent_handle(SDL_Event *event);
+void windowEvent_handle(const SDL_Event *event);

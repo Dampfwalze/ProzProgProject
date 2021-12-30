@@ -2,4 +2,4 @@
 
 void keyboardEvent_init();
 void keyboardEvent_beginFrame();
-void keyboardEvent_handle(SDL_Event *event);
+void keyboardEvent_handle(const SDL_Event *event);

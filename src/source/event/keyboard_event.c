@@ -115,7 +115,7 @@ void keyboardEvent_beginFrame()
         keyStates[i] = keyStates[i] & 0b100;
 }
 
-void keyboardEvent_handle(SDL_Event *event)
+void keyboardEvent_handle(const SDL_Event *event)
 {
     int keyIndex;
     switch (event->type)

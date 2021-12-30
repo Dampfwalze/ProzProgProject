@@ -2,4 +2,4 @@
 
 void setup();
 void quit();
-void doFrame();
+void doFrame(SDL_Renderer *renderer);

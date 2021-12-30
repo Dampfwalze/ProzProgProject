@@ -8,11 +8,11 @@
 
 int main(int argc, char* args[])
 {
-    handle_sdl_error(SDL_Init(SDL_INIT_EVERYTHING));
-    //    if( != 0)
-    //        printf("SDL_Init failed!\n");
-    //    else
-    //        printf("SDL_Init was successful!\n");
+    if (handle_sdl_error(SDL_Init(SDL_INIT_EVERYTHING)))
+    {
+        printf("SDL_Init failed!\n");
+        return EXIT_FAILURE;
+    }
 
     SDL_Window *window = handle_sdl_error(SDL_CreateWindow("Test", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 400, 300, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE));
     SDL_Renderer *renderer = handle_sdl_error(SDL_CreateRenderer(window, -1, 0));
