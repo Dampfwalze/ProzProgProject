@@ -2,8 +2,9 @@
 
 # Software Requirements
 - MinGW
-- CMake
-- SDL2 installed for MinGW on the system
+- [CMake](https://cmake.org/)
+- [SDL2](https://www.libsdl.org/) for MinGW
+- [FreeType](https://freetype.org/) for MinGW
 
 ## How to run
 To configure the project into a new build directory, run:
@@ -14,4 +15,4 @@ To build it, run:
 ```
 cmake --build path/to/build
 ```
-this will create an executable in the root of the build folder
+This will create an executable in the root of the build folder

@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
+#include <SDL2/SDL_image.h>
 
 #include "game.h"
 #include "event_dispatcher.h"
@@ -11,6 +13,16 @@ int main(int argc, char* args[])
     if (handle_sdl_error(SDL_Init(SDL_INIT_EVERYTHING)))
     {
         printf("SDL_Init failed!\n");
+        return EXIT_FAILURE;
+    }
+    if (handle_sdl_error(TTF_Init()))
+    {
+        printf("TTF_Init failed!\n");
+        return EXIT_FAILURE;
+    }
+    if (handle_sdl_error(IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG)))
+    {
+        printf("IMG_Init failed!\n");
         return EXIT_FAILURE;
     }
 
@@ -40,6 +52,8 @@ int main(int argc, char* args[])
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
 
+    IMG_Quit();
+    TTF_Quit();
     SDL_Quit();
     return 0;
 }
