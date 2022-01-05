@@ -23,6 +23,7 @@ target_link_libraries( app PRIVATE -lmingw32 ${SDL2_LIBRARIES} SDL2_TTF SDL2_Ima
 target_include_directories(
     app PUBLIC
     ${SDL2_INCLUDE_DIRS}
+    ${SDL2_INCLUDE_DIRS}/SDL2
     ${PROJECT_SOURCE_DIR}/deps/SDL2_TTF/include
     ${PROJECT_SOURCE_DIR}/deps/SDL2_Image/include
     ${PROJECT_SOURCE_DIR}/src/include
@@ -31,5 +32,5 @@ target_include_directories(
 
 file(COPY ${PROJECT_SOURCE_DIR}/libfreetype-6.dll DESTINATION ${PROJECT_BINARY_DIR})
 file(COPY ${PROJECT_SOURCE_DIR}/SDL2.dll DESTINATION ${PROJECT_BINARY_DIR})
-file(COPY ${PROJECT_SOURCE_DIR}/SDL2_ttf.dll DESTINATION ${PROJECT_BINARY_DIR})
+#file(COPY ${PROJECT_SOURCE_DIR}/SDL2_ttf.dll DESTINATION ${PROJECT_BINARY_DIR})
 file(COPY ${PROJECT_SOURCE_DIR}/zlib1.dll DESTINATION ${PROJECT_BINARY_DIR})

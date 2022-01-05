@@ -1,4 +1,4 @@
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #include <stdio.h>
 
 void handleSDLError(const char *stm, const char *file, int line)

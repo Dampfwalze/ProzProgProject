@@ -1,4 +1,4 @@
-#include <SDL2/SDL.h>
+#include <SDL.h>
 
 void windowEvent_init();
 void windowEvent_beginFrame();

@@ -1,4 +1,4 @@
-#include <SDL2/SDL.h>
+#include <SDL.h>
 #include "event_dispatcher.h"
 #include "keyboard_event.h"
 #include "window_event.h"

@@ -1,4 +1,4 @@
-#include <SDL2/SDL.h>
+#include <SDL.h>
 
 void keyboardEvent_init();
 void keyboardEvent_beginFrame();
