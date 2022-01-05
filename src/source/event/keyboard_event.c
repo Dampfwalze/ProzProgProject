@@ -83,15 +83,7 @@ int _findKey(SDL_Keycode keyCode)
 
 char keyPressed(SDL_Keycode keyCode)
 {
-    return keyStates[_findKey(keyCode)] & 0b010;
-}
-char keyReleased(SDL_Keycode keyCode)
-{
-    return keyStates[_findKey(keyCode)] & 0b001;
-}
-char keyDown(SDL_Keycode keyCode)
-{
-    return keyStates[_findKey(keyCode)] & 0b100;
+    return keyStates[_findKey(keyCode)];
 }
 
 int _compare(const void *a, const void *b)
@@ -109,24 +101,16 @@ void keyboardEvent_init()
     qsort(recordedKeyCodes, recordedKeyCodeCount, sizeof(SDL_Keycode), _compare);
 }
 
-void keyboardEvent_beginFrame()
-{
-    for (size_t i = 0; i < recordedKeyCodeCount; i++)
-        keyStates[i] = keyStates[i] & 0b100;
-}
-
 void keyboardEvent_handle(const SDL_Event *event)
 {
     int keyIndex;
     switch (event->type)
     {
     case SDL_KEYDOWN:
-        keyIndex = _findKey(event->key.keysym.sym);
-        if (!keyStates[keyIndex])
-            keyStates[keyIndex] = 0b110;
+        keyStates[_findKey(event->key.keysym.sym)] = 1;
         break;
     case SDL_KEYUP:
-        keyStates[_findKey(event->key.keysym.sym)] = 0b001;
+        keyStates[_findKey(event->key.keysym.sym)] = 0;
         break;
     default:
         break;
