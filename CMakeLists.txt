@@ -24,6 +24,7 @@ set( CMAKE_LIBRARY_OUTPUT_DIRECTORY         "${OUTPUT_DIRECTORY}")
 #set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${OUTPUT_DIRECTORY}")
 
 set(PNG_ARM_NEON "off")
+add_compile_definitions(PNG_ARM_NEON_OPT=0)
 
 # fetch SDL2
 FetchContent_Declare(
