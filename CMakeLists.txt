@@ -2,10 +2,44 @@ cmake_minimum_required(VERSION 3.14)
 
 project(ProzProgProject VERSION 0.0.0)
 
-# Find SDL2 installed on the system, sets SDL2_INCLUDE_DIRS to SDLs include directory and SDL2_LIBRARIES to all linking files
-find_package(SDL2 REQUIRED)
-message("SDL include path: ${SDL2_INCLUDE_DIRS}")
-message("SDL library: ${SDL2_LIBRARIES}")
+include(FetchContent)
+
+set(C_STANDARD 17)
+
+if(NOT WIN32)
+    set( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -Wall -fPIC" )
+    set( CMAKE_C_FLAGS  "${CMAKE_C_FLAGS} -Wall -fPIC" )
+endif()
+
+# set output directory for all executables and dynamic libraries
+set( OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin")
+set( CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG   "${OUTPUT_DIRECTORY}")
+set( CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE "${OUTPUT_DIRECTORY}")
+set( CMAKE_RUNTIME_OUTPUT_DIRECTORY         "${OUTPUT_DIRECTORY}")
+set( CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG   "${OUTPUT_DIRECTORY}")
+set( CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE "${OUTPUT_DIRECTORY}")
+set( CMAKE_LIBRARY_OUTPUT_DIRECTORY         "${OUTPUT_DIRECTORY}")
+#set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG "${OUTPUT_DIRECTORY}")
+#set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE "${OUTPUT_DIRECTORY}")
+#set( CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${OUTPUT_DIRECTORY}")
+
+# fetch SDL2
+FetchContent_Declare(
+    lib_sdl2
+    GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
+    GIT_TAG release-2.0.18
+    SOURCE_DIR ${CMAKE_SOURCE_DIR}/deps-external/lib_sdl2-src
+)
+
+# fetch SDL_image
+FetchContent_Declare(
+    lib_sdl_image
+    GIT_REPOSITORY https://github.com/libsdl-org/SDL_image.git
+    GIT_TAG main
+    SOURCE_DIR ${CMAKE_SOURCE_DIR}/deps-external/lib_sdl_image-src
+)
+
+FetchContent_MakeAvailable(lib_sdl2 lib_sdl_image)
 
 # Find project sources
 file(GLOB_RECURSE SOURCES RELATIVE ${CMAKE_SOURCE_DIR} "src/*.c")
@@ -14,23 +48,17 @@ file(GLOB_RECURSE HEADRES RELATIVE ${CMAKE_SOURCE_DIR} "src/*.h")
 
 # Include SDL2_TTF from within the project
 add_subdirectory(deps/SDL2_ttf)
-add_subdirectory(deps/SDL2_Image)
 
 add_executable(app ${SOURCES} ${HEADRES} )
 
-# Link SDL2 into the project
-target_link_libraries( app PRIVATE -lmingw32 ${SDL2_LIBRARIES} SDL2_TTF SDL2_Image)
 target_include_directories(
     app PUBLIC
-    ${SDL2_INCLUDE_DIRS}
-    ${SDL2_INCLUDE_DIRS}/SDL2
-    ${PROJECT_SOURCE_DIR}/deps/SDL2_TTF/include
-    ${PROJECT_SOURCE_DIR}/deps/SDL2_Image/include
     ${PROJECT_SOURCE_DIR}/src/include
 )
 
-
-file(COPY ${PROJECT_SOURCE_DIR}/libfreetype-6.dll DESTINATION ${PROJECT_BINARY_DIR})
-file(COPY ${PROJECT_SOURCE_DIR}/SDL2.dll DESTINATION ${PROJECT_BINARY_DIR})
-#file(COPY ${PROJECT_SOURCE_DIR}/SDL2_ttf.dll DESTINATION ${PROJECT_BINARY_DIR})
-file(COPY ${PROJECT_SOURCE_DIR}/zlib1.dll DESTINATION ${PROJECT_BINARY_DIR})
+# link libraries
+if(WIN32)
+    target_link_libraries(app PRIVATE -lmingw32 SDL2::SDL2main SDL2::SDL2 SDL2_image SDL2_TTF)
+else()
+    target_link_libraries(app PRIVATE SDL2::SDL2 SDL2_image SDL2_TTF -lm)
+endif()

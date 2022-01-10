@@ -18,6 +18,8 @@ typedef struct
     int x, y, z;
 } Vec3i;
 
+#ifdef __GNUC__
+
 #define vec2(x, y) (     \
     {                    \
         Vec2 v = {x, y}; \
@@ -53,6 +55,37 @@ typedef struct
         Vec3 vec = v;       \
         vec2(vec.x, vec.y); \
     })
+
+#else
+
+inline Vec2 vec2(double x, double y)
+{
+    Vec2 v = {x, y};
+    return v;
+}
+
+inline Vec3 vec3(double x, double y, double z)
+{
+    Vec3 v = {x, y, z};
+    return v;
+}
+
+inline Vec2i vec2i(int x, int y)
+{
+    Vec2i v = {x, y};
+    return v;
+}
+
+inline Vec3i vec3i(int x, int y, int z)
+{
+    Vec3i v = {x, y, z};
+    return v;
+}
+
+inline Vec3 vec3FromVec2(Vec2 v) { return vec3(v.x, v.y, 0.0); }
+inline Vec2 vec2FromVec3(Vec3 v) { return vec2(v.x, v.y); }
+
+#endif
 
 Vec2 vec2_add(Vec2 v1, Vec2 v2);
 Vec3 vec3_add(Vec3 v1, Vec3 v2);

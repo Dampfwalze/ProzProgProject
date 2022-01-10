@@ -32,7 +32,9 @@ int keyBoardCallback(SDL_KeyboardEvent *event)
 
 int main(int argc, char *args[])
 {
-    application_setup();
+    int err = application_setup();
+    if (err)
+        return err;
 
     initEventHandling();
 

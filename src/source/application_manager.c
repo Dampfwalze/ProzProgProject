@@ -3,10 +3,15 @@
 #include "sdl_error_handler.h"
 #include "render.h"
 
+#include <stdio.h>
+#include <stdlib.h>
+
 SDL_Window *window;
 SDL_Renderer *renderer;
 
-void application_setup()
+SDL_Texture *image;
+
+int application_setup()
 {
     if (handle_sdl_error(SDL_Init(SDL_INIT_EVERYTHING)))
     {
@@ -18,24 +23,38 @@ void application_setup()
         printf("TTF_Init failed!\n");
         return EXIT_FAILURE;
     }
-    //if (handle_sdl_error(IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG)))
-    //{
-    //    printf("IMG_Init failed!\n");
-    //    return EXIT_FAILURE;
-    //}
+    if (handle_sdl_error(!IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG)))
+    {
+        printf("IMG_Init failed!\n");
+        return EXIT_FAILURE;
+    }
 
     // window and renderer creation
     window = handle_sdl_error(SDL_CreateWindow("Test", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 400, 300, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE));
     renderer = handle_sdl_error(SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC));
 
+    printf("%s\n", SDL_GetError());
+
     // Game setup
     game_setup(renderer);
+    
+    printf("%s\n", SDL_GetError());
+
+    image = IMG_LoadTexture(renderer, "resource/textures/test.jpg");
+
+    printf("%s\n", SDL_GetError());
+
+    return 0;
 }
 
 void application_render(int renderFlags)
 {
     if (renderFlags & RENDER_FULLGAME)
         game_render(renderer, renderFlags);
+
+    //SDL_Rect rect = {0};
+    //SDL_QueryTexture(image, NULL, NULL, &rect.w, &rect.h);
+    SDL_RenderCopy(renderer, image, NULL, NULL);
 
     SDL_RenderPresent(renderer);
 }
@@ -49,7 +68,7 @@ void application_quit()
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
 
-    //IMG_Quit();
+    IMG_Quit();
     TTF_Quit();
     SDL_Quit();
 }

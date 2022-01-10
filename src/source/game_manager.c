@@ -2,6 +2,8 @@
 #include "game_math.h"
 #include "render.h"
 
+#include <stdio.h>
+
 void _renderBoard(SDL_Renderer *renderer);
 void _renderSmilie(SDL_Renderer *renderer);
 void _renderMineCounter(SDL_Renderer *renderer);

@@ -6,3 +6,6 @@
 /bin
 /obj
 /build
+
+# External dependencies
+/deps-external

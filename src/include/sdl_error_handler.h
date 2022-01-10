@@ -1,5 +1,7 @@
 void handleSDLError(const char *stm, const char *file, int line);
 
+#ifdef __GNUC__
+
 #define handle_sdl_error(stm)                                    \
     (                                                            \
         {                                                        \
@@ -9,3 +11,9 @@ void handleSDLError(const char *stm, const char *file, int line);
                 handleSDLError(#stm, __FILE__, __LINE__);        \
             v;                                                   \
         })
+
+#else
+
+#define handle_sdl_error(stm) stm
+
+#endif
