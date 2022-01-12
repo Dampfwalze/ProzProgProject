@@ -23,7 +23,7 @@ void remove_MouseButton_EventCallback(MouseButtonEventCallback callback) { linke
 void remove_MouseMotion_EventCallback(MouseMotionEventCallback callback) { linkedList_remove(&mouseMotionEventCallbacks, callback); }
 void remove_Window_EventCallback(WindowEventCallback callback) { linkedList_remove(&windowEventCallbacks, callback); }
 
-int _callAll(SDL_Event *event, LinkedList *list)
+int _callAll(void *event, LinkedList *list)
 {
     int redraw = 0;
     void *current = linkedList_begin(list);
