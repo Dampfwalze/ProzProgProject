@@ -6,6 +6,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define TH 16
+#define TW 16
+#define W (20+TW+1+(TW*25))
+#define H (105+TH+1+(TH*25))
+
 SDL_Window *window;
 SDL_Renderer *renderer;
 
@@ -30,7 +35,7 @@ int application_setup()
     }
 
     // window and renderer creation
-    window = handle_sdl_error(SDL_CreateWindow("Test", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 400, 300, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE));
+    window = handle_sdl_error(SDL_CreateWindow("Minesweeper", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, W, H, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE));
     renderer = handle_sdl_error(SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC));
 
     printf("%s\n", SDL_GetError());
@@ -40,8 +45,8 @@ int application_setup()
     
     printf("%s\n", SDL_GetError());
 
-    image = IMG_LoadTexture(renderer, "resource/textures/test.jpg");
-
+    //image = IMG_LoadTexture(renderer, "resource/textures/test.jpg");
+    //game_render(renderer, RENDER_BOARD);
     printf("%s\n", SDL_GetError());
 
     return 0;

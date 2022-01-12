@@ -4,15 +4,91 @@
 
 #include <stdio.h>
 
+#define TH 16
+#define TW 16
+#define W (20+TW+1+(TW*25))
+#define H (105+TH+1+(TH*25))
+
 void _renderBoard(SDL_Renderer *renderer);
 void _renderSmilie(SDL_Renderer *renderer);
 void _renderMineCounter(SDL_Renderer *renderer);
 void _renderTimer(SDL_Renderer *renderer);
 
+SDL_Rect tilesdeck[TH * TW];
+int tiledecked[TW*TH];
+SDL_Rect tiles[TH*TW];
+
 void game_setup(SDL_Renderer *renderer)
 {
     int width, height;
     SDL_GetRendererOutputSize(renderer, &width, &height);
+    
+    //Background
+    SDL_SetRenderDrawColor(renderer, 190, 190, 190, 255);
+    SDL_RenderClear(renderer);
+
+    //Game Tiles
+    SDL_Rect tiles[TH * TW];
+    int i, j;
+    for (i = 0; i <= TH-1; i++) {
+        for (j = 0; j <= TW-1; j++) {
+            tiles[i * TW + j].x = 11 + 26 * j;
+            tiles[i * TW + j].y = 96 + 26 * i;
+            tiles[i * TW + j].h = 25;
+            tiles[i * TW + j].w = 25;
+        }
+    }
+    SDL_SetRenderDrawColor(renderer, 150, 150, 150, 255);
+    SDL_RenderFillRects(renderer, tiles, TH*TW);
+
+    //Game Tiles Outlines
+    SDL_SetRenderDrawColor(renderer, 50, 50, 50, 255);
+    for (i = 0; i <= TH; i++) {
+        SDL_RenderDrawLine(renderer, 10, 95 + 26 * i, W-11, 95 + 26 * i);
+    }
+    for (i = 0; i <= TW; i++) {
+        SDL_RenderDrawLine(renderer, 10 + 26 * i, 95, 10 + 26 * i, H-11);
+    }
+
+    //Topbar
+    SDL_Rect topbar;
+    topbar.x = 10;
+    topbar.y = 10;
+    topbar.h = 75;
+    topbar.w = W - 20;
+    SDL_SetRenderDrawColor(renderer, 100, 100, 100, 255);
+    SDL_RenderFillRect(renderer, &topbar);
+
+    //Smiley
+    SDL_Rect smiley, smileyback;
+    smileyback.x = (W / 2) - 27;
+    smileyback.y = 20;
+    smileyback.h = 55;
+    smileyback.w = 55;
+    SDL_SetRenderDrawColor(renderer, 150, 150, 150, 255);
+    SDL_RenderFillRect(renderer, &smileyback);
+    smiley.x = (W / 2) - 25;
+    smiley.y = 22;
+    smiley.h = 51;
+    smiley.w = 51;
+    SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);
+    SDL_RenderFillRect(renderer, &smiley);
+
+    //Game Tiles deck
+    for (i = 0; i <= (TH*TW)-1; i++) {
+        tiledecked[i] = 1;
+    }
+    for (i = 0; i <= TH-1; i++) {
+        for (j = 0; j <= TW-1; j++) {
+            tilesdeck[i * TW + j].x = 13 + 26 * j;
+            tilesdeck[i * TW + j].y = 98 + 26 * i;
+            tilesdeck[i * TW + j].h = 21;
+            tilesdeck[i * TW + j].w = 21;
+        }
+    }
+    SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);
+    SDL_RenderFillRects(renderer, tilesdeck, TH*TW);
+
 }
 
 void game_quit()
@@ -37,6 +113,16 @@ void game_render(SDL_Renderer *renderer, int renderFlags)
 void _renderBoard(SDL_Renderer *renderer)
 {
     printf("Render board\n");
+    SDL_SetRenderDrawColor(renderer, 150, 150, 150, 255);
+    SDL_RenderFillRects(renderer, tiles, TH*TW);
+
+    SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);
+    int i;
+    for (i = 0; i <= (TW*TH)-1; i++) {
+        if (tiledecked[i]) {
+            SDL_RenderFillRect(renderer, &tilesdeck[i]);
+        }
+    }
 }
 
 void _renderSmilie(SDL_Renderer *renderer)
