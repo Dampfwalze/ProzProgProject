@@ -1,6 +1,7 @@
 #include "game_manager.h"
 #include "game_math.h"
 #include "render.h"
+#include "game_util.h"
 
 #include <stdio.h>
 
@@ -9,10 +10,17 @@
 #define W (20+TW+1+(TW*25))
 #define H (105+TH+1+(TH*25))
 
+#define gameboardByteLength boardSize.x *boardSize.y * sizeof(Tile)
+
+void _renderBackground(SDL_Renderer *renderer);
 void _renderBoard(SDL_Renderer *renderer);
 void _renderSmilie(SDL_Renderer *renderer);
 void _renderMineCounter(SDL_Renderer *renderer);
 void _renderTimer(SDL_Renderer *renderer);
+
+Vec2 boardSize = {16, 16};
+
+Tile *gameBoard;
 
 SDL_Rect tilesdeck[TH * TW];
 int tiledecked[TW*TH];
@@ -22,12 +30,16 @@ void game_setup(SDL_Renderer *renderer)
 {
     int width, height;
     SDL_GetRendererOutputSize(renderer, &width, &height);
-    
-    //Background
+
+    // Alloc game board
+    gameBoard = malloc(gameboardByteLength);
+    SDL_memset(gameBoard, 0, gameboardByteLength);
+
+    // Background
     SDL_SetRenderDrawColor(renderer, 190, 190, 190, 255);
     SDL_RenderClear(renderer);
 
-    //Game Tiles
+    // Game Tiles
     SDL_Rect tiles[TH * TW];
     int i, j;
     for (i = 0; i <= TH-1; i++) {
@@ -41,7 +53,7 @@ void game_setup(SDL_Renderer *renderer)
     SDL_SetRenderDrawColor(renderer, 150, 150, 150, 255);
     SDL_RenderFillRects(renderer, tiles, TH*TW);
 
-    //Game Tiles Outlines
+    // Game Tiles Outlines
     SDL_SetRenderDrawColor(renderer, 50, 50, 50, 255);
     for (i = 0; i <= TH; i++) {
         SDL_RenderDrawLine(renderer, 10, 95 + 26 * i, W-11, 95 + 26 * i);
@@ -50,7 +62,7 @@ void game_setup(SDL_Renderer *renderer)
         SDL_RenderDrawLine(renderer, 10 + 26 * i, 95, 10 + 26 * i, H-11);
     }
 
-    //Topbar
+    // Topbar
     SDL_Rect topbar;
     topbar.x = 10;
     topbar.y = 10;
@@ -59,7 +71,7 @@ void game_setup(SDL_Renderer *renderer)
     SDL_SetRenderDrawColor(renderer, 100, 100, 100, 255);
     SDL_RenderFillRect(renderer, &topbar);
 
-    //Smiley
+    // Smiley
     SDL_Rect smiley, smileyback;
     smileyback.x = (W / 2) - 27;
     smileyback.y = 20;
@@ -74,7 +86,7 @@ void game_setup(SDL_Renderer *renderer)
     SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);
     SDL_RenderFillRect(renderer, &smiley);
 
-    //Game Tiles deck
+    // Game Tiles deck
     for (i = 0; i <= (TH*TW)-1; i++) {
         tiledecked[i] = 1;
     }
@@ -100,6 +112,8 @@ void game_render(SDL_Renderer *renderer, int renderFlags)
     int width, height;
     SDL_GetRendererOutputSize(renderer, &width, &height);
 
+    if (renderFlags & RENDER_BOARD && renderFlags & RENDER_SMILIE && renderFlags & RENDER_MINECOUNTER && renderFlags & RENDER_TIMER)
+        _renderBackground(renderer);
     if (renderFlags & RENDER_BOARD)
         _renderBoard(renderer);
     if (renderFlags & RENDER_SMILIE)
@@ -108,6 +122,10 @@ void game_render(SDL_Renderer *renderer, int renderFlags)
         _renderMineCounter(renderer);
     if (renderFlags & RENDER_TIMER)
         _renderTimer(renderer);
+}
+
+void _renderBackground(SDL_Renderer *renderer)
+{
 }
 
 void _renderBoard(SDL_Renderer *renderer)
