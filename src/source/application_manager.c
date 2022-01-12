@@ -2,6 +2,7 @@
 #include "game_manager.h"
 #include "sdl_error_handler.h"
 #include "render.h"
+#include "event_dispatcher.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,6 +16,17 @@ SDL_Window *window;
 SDL_Renderer *renderer;
 
 SDL_Texture *image;
+
+int windowEventCallback(SDL_WindowEvent *event)
+{
+    switch (event->event)
+    {
+    case SDL_WINDOWEVENT_RESIZED:
+        return RENDER_EVERYTHING;
+    default:
+        return 0;
+    }
+}
 
 int application_setup()
 {
@@ -48,6 +60,8 @@ int application_setup()
     //image = IMG_LoadTexture(renderer, "resource/textures/test.jpg");
     //game_render(renderer, RENDER_BOARD);
     printf("%s\n", SDL_GetError());
+
+    add_Window_EventCallback(windowEventCallback);
 
     return 0;
 }
