@@ -2,6 +2,7 @@
 #include "game_math.h"
 #include "render.h"
 #include "game_util.h"
+#include "asset_manager.h"
 
 #include <stdio.h>
 
@@ -22,9 +23,17 @@ Vec2 boardSize = {16, 16};
 
 Tile *gameBoard;
 
+int tileSize = 25;
+
 SDL_Rect tilesdeck[TH * TW];
 int tiledecked[TW*TH];
 SDL_Rect tiles[TH*TW];
+
+void game_loadAssets(SDL_Renderer *renderer)
+{
+    loadSymbols(renderer, ((float)tileSize) * 0.8f);
+    genGameTile(renderer, tileSize);
+}
 
 void game_setup(SDL_Renderer *renderer)
 {

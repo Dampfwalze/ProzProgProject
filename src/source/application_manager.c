@@ -3,6 +3,7 @@
 #include "sdl_error_handler.h"
 #include "render.h"
 #include "event_dispatcher.h"
+#include "asset_manager.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -50,16 +51,16 @@ int application_setup()
     window = handle_sdl_error(SDL_CreateWindow("Minesweeper", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, W, H, SDL_WINDOW_SHOWN | SDL_WINDOW_RESIZABLE));
     renderer = handle_sdl_error(SDL_CreateRenderer(window, -1, SDL_RENDERER_PRESENTVSYNC));
 
-    printf("%s\n", SDL_GetError());
-
     // Game setup
     game_setup(renderer);
-    
-    printf("%s\n", SDL_GetError());
 
     //image = IMG_LoadTexture(renderer, "resource/textures/test.jpg");
     //game_render(renderer, RENDER_BOARD);
-    printf("%s\n", SDL_GetError());
+
+    // Load Assets
+    loadSmiley(renderer, 17); // leave at 17 and use point filtering, when rendering (default)
+    genSmileyTile(renderer, 50);
+    game_loadAssets(renderer);
 
     add_Window_EventCallback(windowEventCallback);
 
@@ -73,7 +74,9 @@ void application_render(int renderFlags)
 
     //SDL_Rect rect = {0};
     //SDL_QueryTexture(image, NULL, NULL, &rect.w, &rect.h);
-    SDL_RenderCopy(renderer, image, NULL, NULL);
+    //SDL_RenderCopy(renderer, image, NULL, NULL);
+
+    debug_renderAll(renderer);
 
     SDL_RenderPresent(renderer);
 }
