@@ -76,7 +76,7 @@ void application_render(int renderFlags)
     //SDL_QueryTexture(image, NULL, NULL, &rect.w, &rect.h);
     //SDL_RenderCopy(renderer, image, NULL, NULL);
 
-    debug_renderAll(renderer);
+    //debug_renderAll(renderer);
 
     SDL_RenderPresent(renderer);
 }

@@ -27,7 +27,7 @@ int tileSize = 25;
 
 SDL_Rect tilesdeck[TH * TW];
 int tiledecked[TW*TH];
-SDL_Rect tiles[TH*TW];
+SDL_Rect tiles[TH*TW], tilesnum[TH*TW];
 SDL_Rect smiley, smileyback, topbar;
 
 
@@ -60,6 +60,14 @@ void game_setup(SDL_Renderer *renderer)
             tiles[i * TW + j].w = 25;
         }
     }
+    for (i = 0; i <= TH-1; i++) {
+        for (j = 0; j <= TW-1; j++) {
+            tilesnum[i * TW + j].x = 13 + 26 * j;
+            tilesnum[i * TW + j].y = 98 + 26 * i;
+            tilesnum[i * TW + j].h = 21;
+            tilesnum[i * TW + j].w = 21;
+        }
+    }
     /*SDL_SetRenderDrawColor(renderer, 150, 150, 150, 255);
     SDL_RenderFillRects(renderer, tiles, TH*TW);*/
 
@@ -87,10 +95,10 @@ void game_setup(SDL_Renderer *renderer)
     smileyback.w = 55;
     /*SDL_SetRenderDrawColor(renderer, 150, 150, 150, 255);
     SDL_RenderFillRect(renderer, &smileyback);*/
-    smiley.x = (W / 2) - 25;
-    smiley.y = 22;
-    smiley.h = 51;
-    smiley.w = 51;
+    smiley.x = (W / 2) - 15;
+    smiley.y = 32;
+    smiley.h = 30;
+    smiley.w = 30;
     /*SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);
     SDL_RenderFillRect(renderer, &smiley);*/
 
@@ -137,6 +145,9 @@ void _renderBackground(SDL_Renderer *renderer)
     
     SDL_SetRenderDrawColor(renderer, 190, 190, 190, 255);
     SDL_RenderClear(renderer);
+
+    SDL_SetRenderDrawColor(renderer, 100, 100, 100, 255);
+    SDL_RenderFillRect(renderer, &topbar);
     SDL_SetRenderDrawColor(renderer, 50, 50, 50, 255);
     int i;
     for (i = 0; i <= TH; i++) {
@@ -156,13 +167,30 @@ void _renderBoard(SDL_Renderer *renderer)
 
     SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);
     int i;
+
     for (i = 0; i <= (TW*TH)-1; i++) {
-        if (gameBoard[i] & MARKED_MASK) {
-        } else SDL_RenderFillRect(renderer, &tilesdeck[i]);
+        if (gameBoard[i] & REVEALED_MASK) {
+            if (gameBoard[i] & MINE_MASK) {
+                SDL_RenderCopy(renderer, assets.symbols.mine, NULL, &tilesnum[i]);
+            } else if (gameBoard[i] & SYMBOL_MASK)
+                SDL_RenderCopy(renderer, assets.symbols.digits[((gameBoard[i] & SYMBOL_MASK)/4)], NULL, &tilesnum[i]);
+        }
     }
 
-    SDL_SetRenderDrawColor(renderer, 100, 100, 100, 255);
-    SDL_RenderFillRect(renderer, &topbar);
+    SDL_Rect flag;
+    for (i = 0; i <= (TW*TH)-1; i++) {
+        if (gameBoard[i] & REVEALED_MASK) {
+        } else SDL_RenderCopy(renderer, assets.tiles.tile, NULL, &tilesdeck[i]);
+        if (gameBoard[i] & MARKED_MASK) {
+            flag = tiles[i];
+            flag.x += 5;
+            flag.y += 5;
+            flag.h -= 10;
+            flag.w -= 10;
+            SDL_RenderCopy(renderer, assets.symbols.flag, NULL, &flag);
+        }
+    }
+
 }
 
 void _renderSmilie(SDL_Renderer *renderer)
@@ -170,10 +198,12 @@ void _renderSmilie(SDL_Renderer *renderer)
     printf("Render smilie\n");
 
     SDL_SetRenderDrawColor(renderer, 150, 150, 150, 255);
-    SDL_RenderFillRect(renderer, &smileyback);
-
+    //SDL_RenderFillRect(renderer, &smileyback);
+    SDL_RenderCopy(renderer, assets.tiles.smiley, NULL, &smileyback);
     SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);
-    SDL_RenderFillRect(renderer, &smiley);
+    //SDL_RenderFillRect(renderer, &smiley);
+
+    SDL_RenderCopy(renderer, assets.smiley.cool, NULL, &smiley);
 }
 
 void _renderMineCounter(SDL_Renderer *renderer)

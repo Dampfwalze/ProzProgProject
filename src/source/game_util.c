@@ -59,5 +59,5 @@ unsigned int neighbouringMines(Tile *gameBoard, size_t width, size_t height, siz
 
 char revealTile(Tile *gameBoard, size_t width, size_t x, size_t y)
 {
-    return (gameBoard[y * width + x] + 1);
+    return (gameBoard[y * width + x] + REVEALED_MASK);
 }
