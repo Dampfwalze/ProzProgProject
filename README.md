@@ -20,4 +20,4 @@ To build it, run:
 ```
 cmake --build path/to/build
 ```
-This will create an executable in the root of the build folder
+This will create an executable at bin/app(.exe) in the root of the build folder
