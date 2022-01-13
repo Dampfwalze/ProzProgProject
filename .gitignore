@@ -9,3 +9,6 @@
 
 # External dependencies
 /deps-external
+
+# Mac
+.DS_Store
