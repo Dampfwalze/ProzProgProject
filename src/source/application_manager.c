@@ -23,6 +23,7 @@ int windowEventCallback(SDL_WindowEvent *event)
     switch (event->event)
     {
     case SDL_WINDOWEVENT_RESIZED:
+        resizeAll(window);
         return RENDER_EVERYTHING;
     default:
         return 0;
