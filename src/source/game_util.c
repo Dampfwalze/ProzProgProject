@@ -1,6 +1,7 @@
 #include "game_util.h"
 #include <time.h>
 #include <stdlib.h>
+#include <SDL.h>
 
 void generateMines(Tile *gameBoard, size_t width, size_t height, int mineCount, size_t avoidX, size_t avoidY)
 {
@@ -60,4 +61,35 @@ unsigned int neighbouringMines(Tile *gameBoard, size_t width, size_t height, siz
 char revealTile(Tile *gameBoard, size_t width, size_t x, size_t y)
 {
     return (gameBoard[y * width + x] + REVEALED_MASK);
+}
+
+void calcGameDimensions(GameDimensions *dimensions, int windowWidth, int windowHeight, int boardTileWidth, int boardTileHeight)
+{
+    SDL_Rect boardArea = {
+        13,
+        98,
+        windowWidth - 26,
+        windowHeight - 13 - 98,
+    };
+
+    int vWidth = boardArea.h * ((float)(boardTileWidth) / (float)(boardTileHeight));
+    int hHeight = boardArea.w * ((float)(boardTileHeight) / (float)(boardTileWidth));
+
+    if (hHeight < boardArea.h)
+    {
+        dimensions->boardLeft = boardArea.x;
+        dimensions->boardRight = boardArea.x + boardArea.w;
+        int center = boardArea.y + boardArea.h / 2;
+        dimensions->boardTop = center - hHeight / 2;
+        dimensions->boardBottom = center + hHeight / 2;
+    }
+    else
+    {
+        dimensions->boardTop = boardArea.y;
+        dimensions->boardBottom = boardArea.y + boardArea.h;
+        int center = boardArea.x + boardArea.w / 2;
+        dimensions->boardLeft = center - vWidth / 2;
+        dimensions->boardRight = center + vWidth / 2;
+    }
+    dimensions->tileSize = ((float)(dimensions->boardRight - dimensions->boardLeft)) / boardTileWidth;
 }
