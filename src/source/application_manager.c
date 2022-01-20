@@ -1,5 +1,6 @@
 #include "application_manager.h"
 #include "game_manager.h"
+#include "menu_manager.h"
 #include "sdl_error_handler.h"
 #include "render.h"
 #include "event_dispatcher.h"
@@ -16,14 +17,12 @@
 SDL_Window *window;
 SDL_Renderer *renderer;
 
-SDL_Texture *image;
-
 int windowEventCallback(SDL_WindowEvent *event)
 {
     switch (event->event)
     {
+    case SDL_WINDOWEVENT_SIZE_CHANGED:
     case SDL_WINDOWEVENT_RESIZED:
-        resizeAll(window);
         return RENDER_EVERYTHING;
     default:
         return 0;
@@ -55,13 +54,9 @@ int application_setup()
     // Game setup
     game_setup(renderer);
 
-    //image = IMG_LoadTexture(renderer, "resource/textures/test.jpg");
-    //game_render(renderer, RENDER_BOARD);
-
-    // Load Assets
-    loadSmiley(renderer, 17); // leave at 17 and use point filtering, when rendering (default)
-    genSmileyTile(renderer, 50);
-    game_loadAssets(renderer);
+    game_loadStaticAssets(renderer);
+    loadTextFont(renderer, 20);
+    loadTitleTextFont(renderer, 50);
 
     add_Window_EventCallback(windowEventCallback);
 
@@ -72,10 +67,8 @@ void application_render(int renderFlags)
 {
     if (renderFlags & RENDER_FULLGAME)
         game_render(renderer, renderFlags);
-
-    //SDL_Rect rect = {0};
-    //SDL_QueryTexture(image, NULL, NULL, &rect.w, &rect.h);
-    //SDL_RenderCopy(renderer, image, NULL, NULL);
+    if (renderFlags & RENDER_MENU)
+        menu_render(renderer, renderFlags);
 
     //debug_renderAll(renderer);
 
@@ -94,4 +87,22 @@ void application_quit()
     IMG_Quit();
     TTF_Quit();
     SDL_Quit();
+}
+
+void application_startGameWith(int tileCountX, int tileCountY, int mineCount)
+{
+    game_quit();
+    game_setParameter(tileCountX, tileCountY, mineCount);
+    game_setup(renderer);
+}
+
+void application_startMenu()
+{
+    game_pause();
+    menu_setup(renderer);
+}
+
+void application_QuitMenu()
+{
+    menu_quit();
 }
