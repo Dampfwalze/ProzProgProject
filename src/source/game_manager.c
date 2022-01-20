@@ -165,6 +165,14 @@ void resizeAll(SDL_Window *window) {
             tiles[i * TW + j].w = tilesnum[i * TW + j].w = tileSize;
         }
     }
+    for (i = 0; i <= TH-1; i++) {
+        for (j = 0; j <= TW-1; j++) {
+            tilesnum[i * TW + j].x += tileSize * 0.08;
+            tilesnum[i * TW + j].y += tileSize * 0.08;
+            tilesnum[i * TW + j].h -= tileSize * 0.08 *2;
+            tilesnum[i * TW + j].w -= tileSize * 0.08 *2;
+        }
+    }
 
     // Smiley
     smileyback.x = (w_width / 2) - tileSize;
@@ -220,13 +228,14 @@ void _renderBoard(SDL_Renderer *renderer)
 
     //SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);
 
+    gameBoard[0] = REVEALED_MASK + (3*4);
     int i;
     for (i = 0; i <= (TW*TH)-1; i++) {
         if (gameBoard[i] & REVEALED_MASK) {
             if (gameBoard[i] & MINE_MASK) {
                 SDL_RenderCopy(renderer, assets.symbols.mine, NULL, &tilesnum[i]);
             } else if (gameBoard[i] & SYMBOL_MASK)
-                SDL_RenderCopy(renderer, assets.symbols.digits[((gameBoard[i] & SYMBOL_MASK)/4)], NULL, &tilesnum[i]);
+                SDL_RenderCopy(renderer, assets.symbols.digits[((gameBoard[i] & SYMBOL_MASK)/4)-1], NULL, &tilesnum[i]);
         }
     }
 
