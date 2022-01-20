@@ -1,5 +1,4 @@
 #include "game_manager.h"
-#include "game_math.h"
 #include "render.h"
 #include "game_util.h"
 #include "asset_manager.h"
@@ -18,7 +17,7 @@
 #define GAMESTATE_LOST 1
 #define GAMESTATE_WON 2
 
-Vec2i boardSize = {16, 16};
+SDL_Point boardSize = {16, 16};
 
 Tile *gameBoard;
 
@@ -172,8 +171,6 @@ int game_mouseButtonEventCallback(SDL_MouseButtonEvent *event)
 
     if (event->type == SDL_MOUSEBUTTONUP && event->x >= smileyRect.x && event->y >= smileyRect.y && event->x <= smileyRect.x + smileyRect.w && event->y <= smileyRect.y + smileyRect.h)
     {
-        printf("Smiley clicked!\n");
-
         SDL_Renderer *renderer;
         switch (event->button)
         {
@@ -321,39 +318,6 @@ void game_render(SDL_Renderer *renderer, int renderFlags)
         _renderMineCounter(renderer);
     if (renderFlags & RENDER_TIMER)
         _renderTimer(renderer);
-}
-
-void resizeAll(SDL_Window *window) {
-    int wmaxsize, hmaxsize;
-    SDL_GetWindowSize(window, &w_width, &w_height);
-    wmaxsize = (w_width-20-(TW+1) ) / TW;
-    hmaxsize = (w_height-30-(TH+1) ) / (TH+3);
-    if (wmaxsize > hmaxsize) {
-        tileSize = hmaxsize;
-    } else tileSize = wmaxsize;
-    w_height-= (w_height-( (TH+3)*tileSize + (TH+1) ) ) % 3;
-    w_width-= (w_width-(TW+1 + (TW*tileSize))) % 2;
-    w_hborder = (w_height-( (TH+3)*tileSize + (TH+1) ) ) / 3;
-    w_wborder = (w_width-(TW+1 + (TW*tileSize))) / 2;
-
-    //game tiles
-    int i, j;
-    for (i = 0; i <= TH-1; i++) {
-        for (j = 0; j <= TW-1; j++) {
-            tiles[i * TW + j].x = tilesnum[i * TW + j].x = w_wborder+1 + (tileSize +1) * j;
-            tiles[i * TW + j].y = tilesnum[i * TW + j].y = 2*w_hborder+3*tileSize+1 + (tileSize +1) * i;
-            tiles[i * TW + j].h = tilesnum[i * TW + j].h = tileSize;
-            tiles[i * TW + j].w = tilesnum[i * TW + j].w = tileSize;
-        }
-    }
-    for (i = 0; i <= TH-1; i++) {
-        for (j = 0; j <= TW-1; j++) {
-            tilesnum[i * TW + j].x += tileSize * 0.08;
-            tilesnum[i * TW + j].y += tileSize * 0.08;
-            tilesnum[i * TW + j].h -= tileSize * 0.08 *2;
-            tilesnum[i * TW + j].w -= tileSize * 0.08 *2;
-        }
-    }
 
     //debug_renderAll(renderer);
 }
@@ -388,23 +352,27 @@ void _renderBackground(SDL_Renderer *renderer)
 
 void _renderBoard(SDL_Renderer *renderer)
 {
-    printf("Render board\n");
+    // Background
+    SDL_Rect backRect = {
+        gameDimensions.boardLeft,
+        gameDimensions.boardTop,
+        gameDimensions.boardRight - gameDimensions.boardLeft,
+        gameDimensions.boardBottom - gameDimensions.boardTop,
+    };
+    SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);
+    SDL_RenderFillRect(renderer, &backRect);
 
-    SDL_SetRenderDrawColor(renderer, 170, 170, 170, 255);
-    SDL_RenderFillRects(renderer, tiles, TH*TW);
-    
-
-    //SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);
-
-    gameBoard[0] = REVEALED_MASK + (3*4);
-    int i;
-    for (i = 0; i <= (TW*TH)-1; i++) {
-        if (gameBoard[i] & REVEALED_MASK) {
-            if (gameBoard[i] & MINE_MASK) {
-                SDL_RenderCopy(renderer, assets.symbols.mine, NULL, &tilesnum[i]);
-            } else if (gameBoard[i] & SYMBOL_MASK)
-                SDL_RenderCopy(renderer, assets.symbols.digits[((gameBoard[i] & SYMBOL_MASK)/4)-1], NULL, &tilesnum[i]);
-        }
+    // Background Lines
+    SDL_SetRenderDrawColor(renderer, 110, 110, 110, 255);
+    for (size_t i = 0; i <= boardSize.x; i++)
+    {
+        int x = i * gameDimensions.tileSize + gameDimensions.boardLeft;
+        SDL_RenderDrawLine(renderer, x, gameDimensions.boardTop, x, gameDimensions.boardBottom - 1);
+    }
+    for (size_t i = 0; i <= boardSize.y; i++)
+    {
+        int y = i * gameDimensions.tileSize + gameDimensions.boardTop;
+        SDL_RenderDrawLine(renderer, gameDimensions.boardLeft, y, gameDimensions.boardRight - 1, y);
     }
 
     // Tiles
@@ -419,8 +387,8 @@ void _renderBoard(SDL_Renderer *renderer)
         for (size_t j = 0; j < boardSize.y; j++)
         {
             Tile tile = gameBoard[j * boardSize.x + i];
-            rect.x = gameDimensions.boardLeft + i * gameDimensions.tileSize;
-            rect.y = gameDimensions.boardTop + j * gameDimensions.tileSize;
+            rect.x = gameDimensions.boardLeft + i * gameDimensions.tileSize + 1;
+            rect.y = gameDimensions.boardTop + j * gameDimensions.tileSize + 1;
 
             if (gameState == GAMESTATE_LOST && tile & MARKED_MASK && !(tile & MINE_MASK))
             {

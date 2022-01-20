@@ -1,5 +1,6 @@
 #include "application_manager.h"
 #include "game_manager.h"
+#include "game_util.h"
 #include "menu_manager.h"
 #include "sdl_error_handler.h"
 #include "render.h"
@@ -9,10 +10,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define TH 16
-#define TW 16
-#define W (20+TW+1+(TW*25))
-#define H (105+TH+1+(TH*25))
+#define W (2 * BORDER_SIZE + 25 * 16)
+#define H (3 * BORDER_SIZE + 25 * 16 + TOPBAR_HEIGHT)
 
 SDL_Window *window;
 SDL_Renderer *renderer;

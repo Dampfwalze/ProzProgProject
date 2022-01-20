@@ -6,30 +6,6 @@
 #include "event_dispatcher.h"
 #include "render.h"
 
-int keyBoardCallback(SDL_KeyboardEvent *event)
-{
-    printf("Key Event: %d\n", event->keysym.sym);
-    switch (event->keysym.sym)
-    {
-    case SDLK_0:
-        return RENDER_BOARD;
-
-    case SDLK_1:
-        return RENDER_SMILIE;
-
-    case SDLK_2:
-        return RENDER_MINECOUNTER;
-
-    case SDLK_3:
-        return RENDER_TIMER;
-
-    case SDLK_4:
-        return RENDER_FULLGAME;
-    default:
-        return 0;
-    }
-}
-
 int main(int argc, char *args[])
 {
     int err = application_setup();
@@ -37,8 +13,6 @@ int main(int argc, char *args[])
         return err;
 
     initEventHandling();
-
-    add_Key_EventCallback(keyBoardCallback);
 
     // draw first frame
     application_render(RENDER_EVERYTHING);
