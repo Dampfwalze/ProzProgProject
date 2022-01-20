@@ -1,18 +1,35 @@
 #include "game_util.h"
+#include "game_manager.h"
 #include <time.h>
 #include <stdlib.h>
 #include <SDL.h>
 
-void generateMines(Tile *gameBoard, size_t width, size_t height, int mineCount, size_t avoidX, size_t avoidY)
+void printBinary(uint64_t d)
+{
+    printf("Binary: ");
+    for (int i = 0; i < sizeof(d) * 8; i++)
+    {
+        if (i != 0 && i % 8 == 0)
+            printf(" ");
+        uint64_t v = 1llu << i;
+        printf((d & v) ? "1" : "0");
+    }
+    printf("\n");
+}
+
+void generateMines(Tile *gameBoard, int64_t width, int64_t height, int mineCount, int64_t avoidX, int64_t avoidY)
 {
     srand((unsigned int) time(NULL));
     int i, randomnumber;
     for (i = 1; i <= mineCount; i++) {
         do {
-            randomnumber = (int) rand() % ((width * height) - 1);
-            if (randomnumber >= ((avoidY * width) + avoidX)) {
-                randomnumber ++;
-            }
+            randomnumber = (int)rand() % ((width * height) - 9);
+            if (randomnumber >= (((avoidY - 1) * width) + (avoidX - 1)))
+                randomnumber += 3;
+            if (randomnumber >= ((avoidY * width) + (avoidX - 1)))
+                randomnumber += 3;
+            if (randomnumber >= (((avoidY + 1) * width) + (avoidX - 1)))
+                randomnumber += 3;
         } while (gameBoard[randomnumber] & MINE_MASK);
         gameBoard[randomnumber] = MINE_MASK;
     }
@@ -21,7 +38,7 @@ void generateMines(Tile *gameBoard, size_t width, size_t height, int mineCount, 
 unsigned int neighbouringMines(Tile *gameBoard, size_t width, size_t height, size_t tileX, size_t tileY)
 {   
     //wenn tilex tiley keine mine ist
-    int i, j, mines = 0;
+    int mines = 0;
     size_t xstart, xend, ystart, yend;
 
     if (tileX == 0) {
@@ -48,9 +65,11 @@ unsigned int neighbouringMines(Tile *gameBoard, size_t width, size_t height, siz
         yend = tileY + 1;
     }
 
-    for (i = xstart; i <= xend; i++) {
-        for (j = ystart; j <= yend; j++) {
-            if (gameBoard[tileY * width + tileX] & MINE_MASK)
+    for (int i = xstart; i <= xend; i++)
+    {
+        for (int j = ystart; j <= yend; j++)
+        {
+            if (gameBoard[j * width + i] & MINE_MASK)
                 mines++;
         }
     }
@@ -58,18 +77,47 @@ unsigned int neighbouringMines(Tile *gameBoard, size_t width, size_t height, siz
     return mines;
 }
 
-char revealTile(Tile *gameBoard, size_t width, size_t x, size_t y)
+int64_t clamp(int64_t min, int64_t max, int64_t i)
 {
-    return (gameBoard[y * width + x] + REVEALED_MASK);
+    return i < min ? min : (i > max ? max : i);
+}
+
+char revealTile(Tile *gameBoard, size_t width, size_t height, size_t x, size_t y)
+{
+    Tile *tile = &gameBoard[x + width * y];
+    if (*tile & REVEALED_MASK || *tile & MARKED_MASK)
+        return 0;
+
+    *tile = *tile | REVEALED_MASK;
+    revealedTiles++;
+
+    if (*tile & MINE_MASK)
+        return 1;
+
+    unsigned int count = neighbouringMines(gameBoard, width, height, x, y);
+    *tile = *tile | ((count << 2) & SYMBOL_MASK); // "& SYMBOL_MASK" only for safety
+
+    if (count == 0)
+    {
+        int minX = clamp(0, width - 1, x - 1);
+        int maxX = clamp(0, width - 1, x + 1);
+        int minY = clamp(0, height - 1, y - 1);
+        int maxY = clamp(0, height - 1, y + 1);
+
+        for (size_t i = minX; i <= maxX; i++)
+            for (size_t j = minY; j <= maxY; j++)
+                revealTile(gameBoard, width, height, i, j);
+    }
+    return 0;
 }
 
 void calcGameDimensions(GameDimensions *dimensions, int windowWidth, int windowHeight, int boardTileWidth, int boardTileHeight)
 {
     SDL_Rect boardArea = {
-        13,
-        98,
-        windowWidth - 26,
-        windowHeight - 13 - 98,
+        BORDER_SIZE,
+        2 * BORDER_SIZE + TOPBAR_HEIGHT,
+        windowWidth - 2 * BORDER_SIZE,
+        windowHeight - 3 * BORDER_SIZE - TOPBAR_HEIGHT,
     };
 
     int vWidth = boardArea.h * ((float)(boardTileWidth) / (float)(boardTileHeight));
