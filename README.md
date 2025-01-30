@@ -1,5 +1,11 @@
 # ProzProgProject
 
+<p align="center">
+<img src="img/preview.png" width="40%" alt="Preview" />
+</p>
+
+Minesweeper. This project is part of a university assignment for the module __"Prozedurale Programmierung"__ at __TUHH__.
+
 ## Software Requirements
 - [CMake](https://cmake.org/)
 
