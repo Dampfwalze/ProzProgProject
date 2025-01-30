@@ -6,7 +6,7 @@ include(FetchContent)
 FetchContent_Declare(
     lib_freetype
     GIT_REPOSITORY https://github.com/freetype/freetype.git
-    GIT_TAG VER-2-11-1
+    GIT_TAG VER-2-13-3
     SOURCE_DIR ${CMAKE_SOURCE_DIR}/deps-external/lib_freetype-src
 )
 

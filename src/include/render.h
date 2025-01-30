@@ -1,5 +1,5 @@
 
-
+// clang-format off
 #define RENDER_BOARD        0b10000000
 #define RENDER_SMILIE       0b01000000
 #define RENDER_MINECOUNTER  0b00100000
@@ -9,21 +9,22 @@
 #define RENDER_MENU_FOR     0b00000100
 #define RENDER_MENU         0b00001100
 #define RENDER_EVERYTHING   0b11111111
+// clang-format on
 
 ///**
 // * Requires a pointer to a SDL_Renderer structure called "renderer" to be present in the current context
 // */
-//#define setColor(r, g, b, a) SDL_SetRenderDrawColor(renderer, r, g, b, a)
+// #define setColor(r, g, b, a) SDL_SetRenderDrawColor(renderer, r, g, b, a)
 //
 ///**
 // * Requires a pointer to a SDL_Renderer structure called "renderer" to be present in the current context
 // */
-//#define clearSurface() SDL_RenderClear(renderer)
+// #define clearSurface() SDL_RenderClear(renderer)
 //
 ///**
 // * Requires a pointer to a SDL_Renderer structure called "renderer" to be present in the current context
 // */
-//#define drawRect(x, y, w, h)                                      \
+// #define drawRect(x, y, w, h)                                      \
 //    (                                                             \
 //        {                                                         \
 //            _Generic(x,                                           \

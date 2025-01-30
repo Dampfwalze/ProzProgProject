@@ -17,7 +17,7 @@ int main(int argc, char *args[])
     // draw first frame
     application_render(RENDER_EVERYTHING);
 
-    // main game loop
+    // main event loop
     int redraw = 0;
     while (!handleEvents(&redraw))
     {

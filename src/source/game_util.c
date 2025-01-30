@@ -17,12 +17,24 @@ void printBinary(uint64_t d)
     printf("\n");
 }
 
+/**
+ * Generiert Minen, garantiert aber, dass in einem 3x3 Feld um ein bestimmtes Tile keine Mine generiert wird
+ *
+ * gameBoard - width * height großes array, in welches Minen generiert werden
+ * width - Breite des Spielfelds
+ * height - Höhe des Spielfelds
+ * mineCount - Anzahl an zu generierenden Minen
+ * avoidX - x-Koordinate des zu vermeidenden Tiles
+ * avoidY - y-Koordinate des zu vermeidenden Tiles
+ */
 void generateMines(Tile *gameBoard, int64_t width, int64_t height, int mineCount, int64_t avoidX, int64_t avoidY)
 {
-    srand((unsigned int) time(NULL));
-    int i, randomnumber;
-    for (i = 1; i <= mineCount; i++) {
-        do {
+    srand((unsigned int)time(NULL));
+    int randomnumber;
+    for (int i = 0; i < mineCount; i++)
+    {
+        do
+        {
             randomnumber = (int)rand() % ((width * height) - 9);
             if (randomnumber >= (((avoidY - 1) * width) + (avoidX - 1)))
                 randomnumber += 3;
@@ -36,31 +48,39 @@ void generateMines(Tile *gameBoard, int64_t width, int64_t height, int mineCount
 }
 
 unsigned int neighbouringMines(Tile *gameBoard, size_t width, size_t height, size_t tileX, size_t tileY)
-{   
-    //wenn tilex tiley keine mine ist
+{
+    // wenn tilex tiley keine mine ist
     int mines = 0;
     size_t xstart, xend, ystart, yend;
 
-    if (tileX == 0) {
+    if (tileX == 0)
+    {
         xstart = tileX;
         xend = tileX + 1;
-    } else 
-    if (tileX == width - 1) {
+    }
+    else if (tileX == width - 1)
+    {
         xend = tileX;
         xstart = tileX - 1;
-    } else {
+    }
+    else
+    {
         xstart = tileX - 1;
         xend = tileX + 1;
     }
 
-    if (tileY == 0) {
+    if (tileY == 0)
+    {
         ystart = tileY;
         yend = tileY + 1;
-    } else 
-    if (tileY == height - 1) {
+    }
+    else if (tileY == height - 1)
+    {
         yend = tileY;
         ystart = tileY - 1;
-    } else {
+    }
+    else
+    {
         ystart = tileY - 1;
         yend = tileY + 1;
     }

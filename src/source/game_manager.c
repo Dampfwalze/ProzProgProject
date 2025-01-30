@@ -1,4 +1,5 @@
 #include "game_manager.h"
+#include "application_manager.h"
 #include "render.h"
 #include "game_util.h"
 #include "asset_manager.h"
@@ -50,6 +51,10 @@ void _renderBoard(SDL_Renderer *renderer);
 void _renderSmilie(SDL_Renderer *renderer);
 void _renderMineCounter(SDL_Renderer *renderer);
 void _renderTimer(SDL_Renderer *renderer);
+
+void game_restart(SDL_Renderer *renderer);
+void game_win();
+void game_lose();
 
 SDL_TimerID timerID;
 
@@ -319,7 +324,7 @@ void game_render(SDL_Renderer *renderer, int renderFlags)
     if (renderFlags & RENDER_TIMER)
         _renderTimer(renderer);
 
-    //debug_renderAll(renderer);
+    // debug_renderAll(renderer);
 }
 
 void _renderBackground(SDL_Renderer *renderer)
@@ -411,10 +416,10 @@ void _renderBoard(SDL_Renderer *renderer)
                 SDL_SetRenderDrawColor(renderer, 255, 0, 0, 255);
                 SDL_RenderDrawLines(renderer, line1, 2);
                 SDL_RenderDrawLines(renderer, line2, 2);
-                //SDL_RenderDrawLine(renderer, line1[0].x, line1[0].y, line1[1].x, line1[1].y);
-                //SDL_RenderDrawLine(renderer, line2[0].x, line2[0].y, line2[1].x, line2[1].y);
-                //SDL_RenderDrawLine(renderer, rect.x + 2, rect.y + 2, rect.x + rect.w - 2, rect.y + rect.h - 2);
-                //SDL_RenderDrawLine(renderer, rect.x + rect.w - 2, rect.y + 2, rect.x + 2, rect.y + rect.h - 2);
+                // SDL_RenderDrawLine(renderer, line1[0].x, line1[0].y, line1[1].x, line1[1].y);
+                // SDL_RenderDrawLine(renderer, line2[0].x, line2[0].y, line2[1].x, line2[1].y);
+                // SDL_RenderDrawLine(renderer, rect.x + 2, rect.y + 2, rect.x + rect.w - 2, rect.y + rect.h - 2);
+                // SDL_RenderDrawLine(renderer, rect.x + rect.w - 2, rect.y + 2, rect.x + 2, rect.y + rect.h - 2);
                 SDL_RenderSetScale(renderer, 1, 1);
             }
 

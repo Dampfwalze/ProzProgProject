@@ -4,10 +4,12 @@
 // | Mine | Symbol            | Aufgedeckt | markiert |
 // | 0    | 0 | 0 | 0 | 0 | 0 | 0          | 0        |
 
+// clang-format off
 #define MINE_MASK     0b10000000
 #define SYMBOL_MASK   0b01111100
 #define REVEALED_MASK 0b00000010
 #define MARKED_MASK   0b00000001
+// clang-format on
 
 #define TOPBAR_CONTENT_HEIGHT 60
 #define TOPBAR_PADDING 10

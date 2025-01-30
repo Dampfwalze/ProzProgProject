@@ -69,7 +69,7 @@ void application_render(int renderFlags)
     if (renderFlags & RENDER_MENU)
         menu_render(renderer, renderFlags);
 
-    //debug_renderAll(renderer);
+    // debug_renderAll(renderer);
 
     SDL_RenderPresent(renderer);
 }

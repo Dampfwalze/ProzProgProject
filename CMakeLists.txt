@@ -30,7 +30,7 @@ add_compile_definitions(PNG_ARM_NEON_OPT=0)
 FetchContent_Declare(
     lib_sdl2
     GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
-    GIT_TAG release-2.0.18
+    GIT_TAG release-2.30.11
     SOURCE_DIR ${CMAKE_SOURCE_DIR}/deps-external/lib_sdl2-src
 )
 
@@ -38,7 +38,7 @@ FetchContent_Declare(
 FetchContent_Declare(
     lib_sdl_image
     GIT_REPOSITORY https://github.com/libsdl-org/SDL_image.git
-    GIT_TAG main
+    GIT_TAG release-2.8.4
     SOURCE_DIR ${CMAKE_SOURCE_DIR}/deps-external/lib_sdl_image-src
 )
 

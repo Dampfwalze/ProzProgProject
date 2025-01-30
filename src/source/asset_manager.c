@@ -316,10 +316,10 @@ SDL_Texture *generateTile(SDL_Renderer *renderer, int size, int padding)
     SDL_RenderGeometry(renderer, NULL, verticies, 3, NULL, 0);
 
     SDL_Rect rect = {
-        padding +1,
-        padding +1,
-        size - padding * 2 -2,
-        size - padding * 2 -2,
+        padding + 1,
+        padding + 1,
+        size - padding * 2 - 2,
+        size - padding * 2 - 2,
     };
     SDL_SetRenderDrawColor(renderer, 200, 200, 200, 255);
     SDL_RenderFillRect(renderer, &rect);
